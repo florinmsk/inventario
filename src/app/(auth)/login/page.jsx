@@ -13,7 +13,7 @@ import Image from "next/image";
 
 import logoImage from "@/assets/logo-dark.svg";
 
-// import { emailLogin } from "../actions";
+import { emailLogin } from "../actions";
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
@@ -110,7 +110,7 @@ export default function Login() {
                 </div>
                 <Button
                   className="w-full bg-gradient-to-tr from-primary to-accent text-white font-medium shadow-lg"
-                  //   formAction={emailLogin}
+                  formAction={emailLogin}
                   type="submit"
                 >
                   Sign In

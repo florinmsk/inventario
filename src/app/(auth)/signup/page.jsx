@@ -12,7 +12,7 @@ import {
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import logoImage from "@/assets/logo-dark.svg";
-// import { signup } from "../actions";
+import { signup } from "../actions";
 
 export default function SignUp() {
   const [isVisible, setIsVisible] = useState(false);
@@ -170,7 +170,7 @@ export default function SignUp() {
               <Button
                 className="w-full bg-gradient-to-tr from-primary to-accent text-white font-medium shadow-lg"
                 type="submit"
-                // formAction={signup}
+                formAction={signup}
               >
                 Sign Up
               </Button>
