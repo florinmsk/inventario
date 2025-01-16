@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@nextui-org/react";
 import { logout } from "../(auth)/actions";
@@ -15,7 +14,7 @@ export default async function Dashboard() {
   return (
     <section>
       <h2>Dashboard</h2>
-      <p>{data.user.email}</p> <Button onPress={logout}>Delogare</Button>
+      <p></p> <Button onPress={logout}>Delogare</Button>
     </section>
   );
 }

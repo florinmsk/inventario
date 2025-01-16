@@ -13,7 +13,7 @@ import Image from "next/image";
 
 import logoImage from "@/assets/logo-dark.svg";
 
-import { emailLogin } from "../actions";
+import { emailLogin, signInWithGoogle } from "../actions";
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
@@ -128,6 +128,7 @@ export default function Login() {
                   }
                   variant="bordered"
                   color="accent"
+                  onPress={signInWithGoogle}
                 >
                   Continue with Google
                 </Button>

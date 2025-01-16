@@ -42,7 +42,7 @@ export async function signup(formData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export async function logout() {
@@ -54,5 +54,30 @@ export async function logout() {
     redirect("/error");
   }
 
+  revalidatePath("/", "layout");
   redirect("/login");
+}
+
+export async function signInWith(provider) {
+  const supabase = await createClient();
+
+  const auth_callback_url = `${process.env.SITE_URL}/callback`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: auth_callback_url,
+    },
+  });
+
+  if (error) {
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+  redirect(data.url);
+}
+
+export async function signInWithGoogle() {
+  return signInWith("google");
 }
