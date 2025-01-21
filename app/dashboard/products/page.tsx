@@ -1,20 +1,17 @@
 'use client';
-import IconFacebook from '@/components/icon/icon-facebook';
-import IconInstagram from '@/components/icon/icon-instagram';
 import IconLayoutGrid from '@/components/icon/icon-layout-grid';
-import IconLinkedin from '@/components/icon/icon-linkedin';
 import IconListCheck from '@/components/icon/icon-list-check';
 import IconSearch from '@/components/icon/icon-search';
-import IconTwitter from '@/components/icon/icon-twitter';
-import IconUser from '@/components/icon/icon-user';
-import IconUserPlus from '@/components/icon/icon-user-plus';
+
 import IconX from '@/components/icon/icon-x';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
 import React, { Fragment, useEffect, useState } from 'react';
+
 import Swal from 'sweetalert2';
 
 import { getProductsData } from '@/data/getProductsData';
 import { createProduct } from '@/data/createProduct';
+import { deleteProduct as deleteProductFromDB } from '@/data/deleteProduct';
 
 export default function ProductsPage() {
     const [addProductModal, setAddProductModal] = useState<any>(false);
@@ -33,7 +30,7 @@ export default function ProductsPage() {
         fetchProductsData();
     }, []);
 
-    const [value, setValue] = useState<any>('list');
+    const [value, setValue] = useState<any>('grid');
     const [defaultParams] = useState({
         id: null,
         title: '',
@@ -45,7 +42,7 @@ export default function ProductsPage() {
 
     const changeValue = (e: any) => {
         const { value, id } = e.target;
-        setParams({ ...params, [id]: value });
+        setParams({ ...params, [id]: value || '' });
     };
 
     const [search, setSearch] = useState<any>('');
@@ -70,7 +67,7 @@ export default function ProductsPage() {
         searchProduct();
     }, [search]);
 
-    const saveProduct = () => {
+    const saveProduct = async () => {
         if (!params.title) {
             showMessage('Title is required.', 'error');
             return true;
@@ -87,7 +84,11 @@ export default function ProductsPage() {
                 description: params.desciption || null,
             };
 
-            createProduct(product);
+            await createProduct(product);
+
+            // Actualizează lista locală de produse
+            setProducts((prevProducts: any) => [...prevProducts, product]);
+            setFilteredItems((prevItems: any) => [...prevItems, product]);
         }
 
         showMessage('User has been saved successfully.');
@@ -98,15 +99,28 @@ export default function ProductsPage() {
         const json = JSON.parse(JSON.stringify(defaultParams));
         setParams(json);
         if (product) {
-            let json1 = JSON.parse(JSON.stringify(product));
-            setParams(json1);
+            json.id = product.id;
+            json.title = product.title || '';
+            json.description = product.description || '';
+            json.image = product.image || '';
         }
         setAddProductModal(true);
     };
 
-    const deleteProduct = (product: any = null) => {
-        setFilteredItems(filteredItems.filter((d: any) => d.id !== product.id));
-        showMessage('Product has been deleted successfully.');
+    const deleteProduct = async (product: any = null) => {
+        try {
+            // Apelează funcția de ștergere din baza de date
+            await deleteProductFromDB(product.id);
+
+            // Actualizează lista locală de produse
+            setFilteredItems(filteredItems.filter((d: any) => d.id !== product.id));
+
+            // Afișează mesajul de succes
+            showMessage('Product has been deleted successfully.');
+        } catch (error) {
+            // Dacă apare o eroare, o afișăm
+            showMessage('Error deleting product: ' + error);
+        }
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -168,7 +182,6 @@ export default function ProductsPage() {
                             </thead>
                             <tbody>
                                 {filteredItems.map((product: any) => (
-                                    // {productsList.map((product: any) => (
                                     <tr key={product.id}>
                                         <td>{product.id}</td>
                                         <td>
@@ -184,12 +197,12 @@ export default function ProductsPage() {
                                         <td>{product.description}</td>
                                         <td>
                                             <div className="flex items-center justify-center gap-4">
-                                                {/* <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(product)}>
+                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editProduct(product)}>
                                                     Edit
                                                 </button>
-                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(product)}>
+                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProduct(product)}>
                                                     Delete
-                                                </button> */}
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -201,7 +214,7 @@ export default function ProductsPage() {
             )}
 
             {value === 'grid' && (
-                <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div key={products.id} className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                     {filteredItems.map((product: any) => {
                         return (
                             <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]" key={product.id}>

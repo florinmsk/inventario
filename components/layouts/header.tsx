@@ -52,8 +52,6 @@ const Header = () => {
     const { t, i18n } = getTranslation();
     const [profile, setProfile] = useState<Profile | any>('');
 
-    const avatar = profile.avatar_url !== null ? profile.avatar_url : '/assets/images/avatar.jpg';
-
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -414,12 +412,14 @@ const Header = () => {
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
-                                button={<img className="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src={avatar} alt="userProfile" />}
+                                button={
+                                    <img className="h-9 w-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src={profile.avatar_url || '/assets/images/avatar.jpg'} alt="userProfile" />
+                                }
                             >
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
-                                            <img className="h-10 w-10 rounded-md object-cover saturate-50" src={avatar} alt="userProfile" />
+                                            <img className="h-10 w-10 rounded-md object-cover saturate-50" src={profile.avatar_url || '/assets/images/avatar.jpg'} alt="userProfile" />
                                             <div className="truncate ltr:pl-4 rtl:pr-4">
                                                 <h4 className="text-base">
                                                     {`${profile.first_name} ${profile.last_name}`}
