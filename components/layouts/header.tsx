@@ -36,6 +36,7 @@ import { getTranslation } from '@/i18n';
 
 import { getAuthUserProfile } from '@/data/authUserProfile';
 import { logout } from '@/app/(auth)/actions';
+import Image from 'next/image';
 
 type Profile = {
     first_name: string;
@@ -419,7 +420,14 @@ const Header = () => {
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
-                                            <img className="h-10 w-10 rounded-md object-cover saturate-50" src={profile.avatar_url || '/assets/images/avatar.jpg'} alt="userProfile" />
+                                            <Image
+                                                width={30}
+                                                height={40}
+                                                priority
+                                                className="h-10 w-10 rounded-md object-cover saturate-50"
+                                                src={profile.avatar_url || '/assets/images/avatar.jpg'}
+                                                alt="userProfile"
+                                            />
                                             <div className="truncate ltr:pl-4 rtl:pr-4">
                                                 <h4 className="text-base">
                                                     {`${profile.first_name} ${profile.last_name}`}

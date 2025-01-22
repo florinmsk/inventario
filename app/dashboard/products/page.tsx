@@ -9,9 +9,10 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import Swal from 'sweetalert2';
 
-import { getProductsData } from '@/data/getProductsData';
-import { createProduct } from '@/data/createProduct';
-import { deleteProduct as deleteProductFromDB } from '@/data/deleteProduct';
+import { getProductsData } from '@/data/products/getProductsData';
+import { createProduct } from '@/data/products/createProduct';
+import { deleteProduct as deleteProductFromDB } from '@/data/products/deleteProduct';
+import { updateProduct } from '@/data/products/updateProduct';
 
 export default function ProductsPage() {
     const [addProductModal, setAddProductModal] = useState<any>(false);
@@ -70,40 +71,63 @@ export default function ProductsPage() {
     const saveProduct = async () => {
         if (!params.title) {
             showMessage('Title is required.', 'error');
-            return true;
+            return true; // Poți returna `false` pentru a semnaliza o eroare sau continuă execuția fără efecte secundare.
         }
 
-        if (params.id) {
-            //update product
-        } else {
-            //add product
+        try {
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+            const file = fileInput?.files?.[0];
 
-            let product = {
-                image: params.image || null,
-                title: params.title,
-                description: params.desciption || null,
-            };
+            if (params.id) {
+                // Actualizează produsul
+                if (file && file.size > 0) {
+                    await updateProduct(params.id, params, file);
+                    showMessage('Product updated successfully.');
+                } else {
+                    showMessage('Product updated successfully.');
+                    await updateProduct(params.id, params);
+                }
+            } else {
+                // Adaugă produsul
+                let product = {
+                    image: params.image || null,
+                    title: params.title,
+                    description: params.description || null,
+                };
 
-            await createProduct(product);
+                console.log('file', file);
 
-            // Actualizează lista locală de produse
-            setProducts((prevProducts: any) => [...prevProducts, product]);
-            setFilteredItems((prevItems: any) => [...prevItems, product]);
+                if (file && file.size > 0) {
+                    await createProduct(product, file);
+                } else {
+                    await createProduct(product);
+                }
+
+                showMessage('Product added successfully.');
+            }
+
+            // Reîncarcă datele produselor după adăugare sau actualizare
+            const data = await getProductsData();
+            setProducts(data);
+            setFilteredItems(data);
+
+            // Închide modalul de adăugare produs
+            setAddProductModal(false);
+        } catch (error) {
+            showMessage('Error saving product: ' + error, 'error');
         }
-
-        showMessage('User has been saved successfully.');
-        setAddProductModal(false);
     };
 
     const editProduct = (product: any = null) => {
         const json = JSON.parse(JSON.stringify(defaultParams));
-        setParams(json);
+
         if (product) {
             json.id = product.id;
             json.title = product.title || '';
             json.description = product.description || '';
             json.image = product.image || '';
         }
+        setParams(json);
         setAddProductModal(true);
     };
 
@@ -186,11 +210,14 @@ export default function ProductsPage() {
                                         <td>{product.id}</td>
                                         <td>
                                             <div className="flex w-max items-center">
-                                                {product.image && (
-                                                    <div className="w-max">
-                                                        <img src={product.image} className="h-8 w-8 rounded-full object-cover ltr:mr-2 rtl:ml-2" alt="avatar" />
-                                                    </div>
-                                                )}
+                                                <div className="w-max">
+                                                    <img
+                                                        src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
+                                                        className="h-8 w-8 rounded-full object-cover ltr:mr-2 rtl:ml-2"
+                                                        alt="avatar"
+                                                    />
+                                                </div>
+
                                                 <div>{product.title}</div>
                                             </div>
                                         </td>
@@ -214,13 +241,17 @@ export default function ProductsPage() {
             )}
 
             {value === 'grid' && (
-                <div key={products.id} className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                     {filteredItems.map((product: any) => {
                         return (
                             <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]" key={product.id}>
                                 <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]">
                                     <div className="rounded-t-md bg-white/10 bg-[url('/assets/images/notification-bg.png')] bg-cover bg-center p-6 pb-0">
-                                        <img className="mx-auto max-h-44 w-4/5 object-contain" src={product.image} alt="product_image" />
+                                        <img
+                                            className="mx-auto max-h-44 min-h-44 w-4/5 object-contain"
+                                            src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
+                                            alt="product_image"
+                                        />
                                     </div>
                                     <div className="relative -mt-10 px-6 pb-24">
                                         <div className="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
@@ -271,18 +302,18 @@ export default function ProductsPage() {
                                         {params.id ? 'Edit Product' : 'Add Product'}
                                     </div>
                                     <div className="p-5">
-                                        <form>
+                                        <form encType="multipart/form-data">
                                             <div className="mb-5">
                                                 <label htmlFor="title">Title</label>
                                                 <input id="title" type="text" placeholder="Enter Title" className="form-input" value={params.title} onChange={changeValue} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="description">Description</label>
-                                                <input id="description" type="text" placeholder="Enter Description" className="form-input" value={params.description} onChange={changeValue} />
+                                                <textarea id="description" placeholder="Enter Description" rows={5} className="form-input" value={params.description} onChange={changeValue}></textarea>
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="image">Image</label>
-                                                <input id="image" type="text" placeholder="Enter Image URL" className="form-input" value={params.image} onChange={changeValue} />
+                                                <input id="image" type="file" className="form-input" onChange={changeValue} accept="image/*" />
                                             </div>
                                             <div className="mt-8 flex items-center justify-end">
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => setAddProductModal(false)}>
