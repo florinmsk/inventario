@@ -1,8 +1,5 @@
 'use client';
-import IconLayoutGrid from '@/components/icon/icon-layout-grid';
-import IconListCheck from '@/components/icon/icon-list-check';
 import IconSearch from '@/components/icon/icon-search';
-
 import IconX from '@/components/icon/icon-x';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
 import React, { Fragment, useEffect, useState } from 'react';
@@ -13,6 +10,7 @@ import { getEmployeesData } from '@/data/employees/getEmployeesData';
 import { createEmployee } from '@/data/employees/createEmployee';
 import { deleteEmployee as deleteEmployeeFromDB } from '@/data/employees/deleteEmployee';
 import { updateEmployee } from '@/data/employees/updateEmployee';
+import Link from 'next/link';
 
 export default function EmployeesPage() {
     const [addEmployeeModal, setAddEmployeeModal] = useState<any>(false);
@@ -198,6 +196,9 @@ export default function EmployeesPage() {
                                     <td>{employee.function}</td>
                                     <td>
                                         <div className="flex items-center justify-center gap-4">
+                                            <Link href={`/dashboard/employees/assign-products/${employee.id}`} className="btn btn-sm btn-outline-success">
+                                                Assign Products
+                                            </Link>
                                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editEmployee(employee)}>
                                                 Edit
                                             </button>
