@@ -10,13 +10,13 @@ import fr from './public/locales/fr.json';
 import hu from './public/locales/hu.json';
 import it from './public/locales/it.json';
 import ja from './public/locales/ja.json';
-import pl from './public/locales/pl.json';
+import kr from './public/locales/kr.json';
 import pt from './public/locales/pt.json';
 import ru from './public/locales/ru.json';
 import sv from './public/locales/sv.json';
 import tr from './public/locales/tr.json';
 import zh from './public/locales/zh.json';
-const langObj: any = { en, ro, da, de, el, es, fr, hu, it, ja, pl, pt, ru, sv, tr, zh };
+const langObj: any = { en, ro, da, de, el, es, fr, hu, it, ja, kr, pt, ru, sv, tr, zh };
 
 const getLang = () => {
     let lang = null;

@@ -1,4 +1,3 @@
-// Import the Supabase client
 import { createClient } from '@/utils/supabase/client';
 
 type Employee = {
@@ -6,25 +5,24 @@ type Employee = {
     last_name: string;
     first_name: string;
     email?: string | null;
-    position?: string | null;
+    function?: string | null;
 };
 
 export const createEmployee = async (employee: Omit<Employee, 'id'>): Promise<Employee[]> => {
     const supabase = createClient();
 
-    // Obține utilizatorul autentificat
+    // Verifică autentificarea utilizatorului
     const { data: authData, error: authError } = await supabase.auth.getUser();
-
     if (authError || !authData?.user) {
         throw new Error('User not authenticated');
     }
 
     const userId = authData.user.id;
 
-    // Adaugă user_id la obiectul angajatului (dacă este necesar în baza de date)
+    // Adaugă user_id și folosește coloana function
     const employeeWithUserId = {
         ...employee,
-        user_id: userId,
+        user_id: userId, // Adaugă user_id
     };
 
     // Inserează angajatul în baza de date
@@ -32,10 +30,6 @@ export const createEmployee = async (employee: Omit<Employee, 'id'>): Promise<Em
 
     if (employeesError) {
         throw new Error(employeesError.message);
-    }
-
-    if (!employees || employees.length === 0) {
-        throw new Error('No employees found');
     }
 
     return employees;

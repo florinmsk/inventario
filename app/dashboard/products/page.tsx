@@ -8,6 +8,7 @@ import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/re
 import React, { Fragment, useEffect, useState } from 'react';
 
 import Swal from 'sweetalert2';
+import { getTranslation } from '@/i18n';
 
 import { getProductsData } from '@/data/products/getProductsData';
 import { createProduct } from '@/data/products/createProduct';
@@ -15,6 +16,7 @@ import { deleteProduct as deleteProductFromDB } from '@/data/products/deleteProd
 import { updateProduct } from '@/data/products/updateProduct';
 
 export default function ProductsPage() {
+    const { t } = getTranslation();
     const [addProductModal, setAddProductModal] = useState<any>(false);
     const [products, setProducts] = useState<any>([]);
 
@@ -70,8 +72,8 @@ export default function ProductsPage() {
 
     const saveProduct = async () => {
         if (!params.title) {
-            showMessage('Title is required.', 'error');
-            return true; // Poți returna `false` pentru a semnaliza o eroare sau continuă execuția fără efecte secundare.
+            showMessage(t('titleRequired'), 'error');
+            return true;
         }
 
         try {
@@ -82,9 +84,9 @@ export default function ProductsPage() {
                 // Actualizează produsul
                 if (file && file.size > 0) {
                     await updateProduct(params.id, params, file);
-                    showMessage('Product updated successfully.');
+                    showMessage(t('product_updated'));
                 } else {
-                    showMessage('Product updated successfully.');
+                    showMessage(t('product_updated'));
                     await updateProduct(params.id, params);
                 }
             } else {
@@ -103,7 +105,7 @@ export default function ProductsPage() {
                     await createProduct(product);
                 }
 
-                showMessage('Product added successfully.');
+                showMessage(t('product_added'));
             }
 
             // Reîncarcă datele produselor după adăugare sau actualizare
@@ -114,7 +116,7 @@ export default function ProductsPage() {
             // Închide modalul de adăugare produs
             setAddProductModal(false);
         } catch (error) {
-            showMessage('Error saving product: ' + error, 'error');
+            showMessage(t('error_saving') + error, 'error');
         }
     };
 
@@ -140,10 +142,10 @@ export default function ProductsPage() {
             setFilteredItems(filteredItems.filter((d: any) => d.id !== product.id));
 
             // Afișează mesajul de succes
-            showMessage('Product has been deleted successfully.');
+            showMessage(t('product_deleted'));
         } catch (error) {
             // Dacă apare o eroare, o afișăm
-            showMessage('Error deleting product: ' + error);
+            showMessage(t('error_deleting') + error);
         }
     };
 
@@ -165,12 +167,12 @@ export default function ProductsPage() {
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="text-xl">Products</h2>
+                <h2 className="text-xl">{t('products')}</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
                         <div>
                             <button type="button" className="btn btn-primary" onClick={() => editProduct()}>
-                                Add Product
+                                {t('add_product')}
                             </button>
                         </div>
                         <div>
@@ -185,7 +187,7 @@ export default function ProductsPage() {
                         </div>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder="Search Products" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input type="text" placeholder={t('search_products')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
                         </button>
@@ -199,9 +201,9 @@ export default function ProductsPage() {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th className="!text-center">Actions</th>
+                                    <th>{t('title')}</th>
+                                    <th>{t('description')}</th>
+                                    <th className="!text-center">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -225,10 +227,10 @@ export default function ProductsPage() {
                                         <td>
                                             <div className="flex items-center justify-center gap-4">
                                                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editProduct(product)}>
-                                                    Edit
+                                                    {t('edit')}
                                                 </button>
                                                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProduct(product)}>
-                                                    Delete
+                                                    {t('delete')}
                                                 </button>
                                             </div>
                                         </td>
@@ -260,10 +262,10 @@ export default function ProductsPage() {
                                         </div>
                                         <div className="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
                                             <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editProduct(product)}>
-                                                Edit
+                                                {t('edit')}
                                             </button>
                                             <button type="button" className="btn btn-outline-danger w-1/2" onClick={() => deleteProduct(product)}>
-                                                Delete
+                                                {t('delete')}
                                             </button>
                                         </div>
                                     </div>
@@ -299,28 +301,35 @@ export default function ProductsPage() {
                                         <IconX />
                                     </button>
                                     <div className="bg-[#fbfbfb] py-3 text-lg font-medium ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5 dark:bg-[#121c2c]">
-                                        {params.id ? 'Edit Product' : 'Add Product'}
+                                        {params.id ? t('edit_product') : t('add_product')}
                                     </div>
                                     <div className="p-5">
                                         <form encType="multipart/form-data">
                                             <div className="mb-5">
-                                                <label htmlFor="title">Title</label>
-                                                <input id="title" type="text" placeholder="Enter Title" className="form-input" value={params.title} onChange={changeValue} />
+                                                <label htmlFor="title">{t('title')}</label>
+                                                <input id="title" type="text" placeholder={t('enter_title')} className="form-input" value={params.title} onChange={changeValue} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="description">Description</label>
-                                                <textarea id="description" placeholder="Enter Description" rows={5} className="form-input" value={params.description} onChange={changeValue}></textarea>
+                                                <label htmlFor="description">{t('description')}</label>
+                                                <textarea
+                                                    id="description"
+                                                    placeholder={t('enter_description')}
+                                                    rows={5}
+                                                    className="form-input"
+                                                    value={params.description}
+                                                    onChange={changeValue}
+                                                ></textarea>
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="image">Image</label>
+                                                <label htmlFor="image">{t('image')}</label>
                                                 <input id="image" type="file" className="form-input" onChange={changeValue} accept="image/*" />
                                             </div>
                                             <div className="mt-8 flex items-center justify-end">
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => setAddProductModal(false)}>
-                                                    Cancel
+                                                    {t('cancel')}
                                                 </button>
                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveProduct}>
-                                                    {params.id ? 'Update' : 'Add'}
+                                                    {params.id ? t('update') : t('add')}
                                                 </button>
                                             </div>
                                         </form>

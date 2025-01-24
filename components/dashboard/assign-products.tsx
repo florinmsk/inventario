@@ -3,14 +3,21 @@ import IconSearch from '@/components/icon/icon-search';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import React, { useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+import AssignProductCard from './assign-products/assign-product-card';
+import { useRouter } from 'next/navigation';
+
+import Swal from 'sweetalert2';
+import { getTranslation } from '@/i18n';
 
 import { getEmployeesData } from '@/data/employees/getEmployeesData';
 import { getAssignedProductsWithDetails } from '@/data/employees/assignedProducts/getAssignedProducts';
 import { getUnassignedProducts } from '@/data/employees/assignedProducts/getUnassignedProducts';
-import AssignProductCard from './assign-products/assign-product-card';
+
 import { createAssignedProducts } from '@/data/employees/assignedProducts/createAssignedProducts';
 
 export default function AssignProducts({ id }: { id: number }) {
+    const { t } = getTranslation();
+    const router = useRouter();
     const [isShowChatMenu, setIsShowChatMenu] = useState(false);
     const [searchProduct, setSearchProduct] = useState('');
 
@@ -36,7 +43,7 @@ export default function AssignProducts({ id }: { id: number }) {
         const fetchAssignedProducts = async () => {
             try {
                 const data = await getAssignedProductsWithDetails();
-                const filteredData = data.filter((product: any) => product.employee_id === id); // Filtrăm produsele după id-ul angajatului
+                const filteredData = data.filter((product: any) => product.employee_id === id);
                 setAssignedProducts(filteredData);
             } catch (error) {
                 console.error(error);
@@ -74,11 +81,30 @@ export default function AssignProducts({ id }: { id: number }) {
 
             await createAssignedProducts(updatedAssignedProducts, id);
 
-            alert('Changes saved successfully!');
+            showMessage('Changes saved successfully!');
+
+            setTimeout(() => {
+                router.push('/dashboard/employees');
+            }, 2000);
         } catch (error) {
             console.error('Failed to save changes:', error);
-            alert('Failed to save changes.');
+            showMessage('Failed to save changes.');
         }
+    };
+
+    const showMessage = (msg = '', type = 'success') => {
+        const toast: any = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+            customClass: { container: 'toast' },
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
     };
 
     return (
@@ -97,7 +123,7 @@ export default function AssignProducts({ id }: { id: number }) {
                         </div>
                     </div>
                     <div className="relative">
-                        <input type="text" className="peer form-input ltr:pr-9 rtl:pl-9" placeholder="Searching..." value={searchProduct} onChange={(e) => setSearchProduct(e.target.value)} />
+                        <input type="text" className="peer form-input ltr:pr-9 rtl:pl-9" placeholder={t('search_products')} value={searchProduct} onChange={(e) => setSearchProduct(e.target.value)} />
                         <div className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-2 rtl:left-2">
                             <IconSearch />
                         </div>
@@ -115,7 +141,7 @@ export default function AssignProducts({ id }: { id: number }) {
                         </PerfectScrollbar>
                         <div className="flex justify-center items-center">
                             <button onClick={saveChanges} className="btn btn-sm btn-outline-success">
-                                Salvează
+                                {t('save')}
                             </button>
                         </div>
                     </div>
@@ -129,7 +155,7 @@ export default function AssignProducts({ id }: { id: number }) {
                                     image={product.image || '/assets/images/imgError.jpg'}
                                     title={product.title}
                                     description={product.description}
-                                    button={true}
+                                    button={false}
                                     link={`/product/${product.id}`}
                                 />
                             </div>

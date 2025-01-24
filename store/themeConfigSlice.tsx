@@ -16,11 +16,11 @@ const initialState = {
         { code: 'en', name: 'English' },
         { code: 'ro', name: 'Romanian' },
         { code: 'fr', name: 'French' },
+        { code: 'es', name: 'Spanish' },
         { code: 'de', name: 'German' },
         { code: 'ja', name: 'Japanese' },
-        { code: 'pt', name: 'Portuguese' },
+        { code: 'kr', name: 'Korean' },
         { code: 'ru', name: 'Russian' },
-        { code: 'es', name: 'Spanish' },
     ],
 };
 

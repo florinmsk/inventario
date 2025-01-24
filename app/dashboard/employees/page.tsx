@@ -4,6 +4,7 @@ import IconX from '@/components/icon/icon-x';
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react';
 import React, { Fragment, useEffect, useState } from 'react';
 
+import { getTranslation } from '@/i18n';
 import Swal from 'sweetalert2';
 
 import { getEmployeesData } from '@/data/employees/getEmployeesData';
@@ -13,6 +14,7 @@ import { updateEmployee } from '@/data/employees/updateEmployee';
 import Link from 'next/link';
 
 export default function EmployeesPage() {
+    const { t } = getTranslation();
     const [addEmployeeModal, setAddEmployeeModal] = useState<any>(false);
     const [employees, setEmployees] = useState<any>([]);
 
@@ -69,11 +71,11 @@ export default function EmployeesPage() {
 
     const saveEmployee = async () => {
         if (!params.last_name) {
-            showMessage('Last name is required.', 'error');
+            showMessage(t('lname_required'), 'error');
             return true;
         }
         if (!params.first_name) {
-            showMessage('First name is required.', 'error');
+            showMessage(t('fname_required'), 'error');
             return true;
         }
 
@@ -81,7 +83,7 @@ export default function EmployeesPage() {
             if (params.id) {
                 // Actualizează produsul
 
-                showMessage('Employee updated successfully.');
+                showMessage(t('employee_updated'));
                 await updateEmployee(params.id, params);
             } else {
                 // Adaugă produsul
@@ -94,7 +96,7 @@ export default function EmployeesPage() {
 
                 await createEmployee(employee);
 
-                showMessage('Employee added successfully.');
+                showMessage(t('employee_added'));
             }
 
             // Reîncarcă datele produselor după adăugare sau actualizare
@@ -105,7 +107,7 @@ export default function EmployeesPage() {
             // Închide modalul de adăugare produs
             setAddEmployeeModal(false);
         } catch (error) {
-            showMessage('Error saving employee: ' + error, 'error');
+            showMessage(t('error_s_employee') + error, 'error');
         }
     };
 
@@ -132,10 +134,10 @@ export default function EmployeesPage() {
             setFilteredItems(filteredItems.filter((d: any) => d.id !== employee.id));
 
             // Afișează mesajul de succes
-            showMessage('Employee has been deleted successfully.');
+            showMessage(t('employee_deleted'));
         } catch (error) {
             // Dacă apare o eroare, o afișăm
-            showMessage('Error deleting employee: ' + error);
+            showMessage(t('error_deleting') + error);
         }
     };
 
@@ -157,17 +159,20 @@ export default function EmployeesPage() {
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="text-xl">Employees</h2>
+                <h2 className="text-xl">{t('employees')}</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
-                        <div>
+                        <div className="flex gap-3">
                             <button type="button" className="btn btn-primary" onClick={() => editEmployee()}>
-                                Add Employee
+                                {t('add_employee')}
                             </button>
+                            <Link href="/dashboard/employees/import-list" className="btn btn-success">
+                                {t('import_mployees')}
+                            </Link>
                         </div>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder="Search Employee" className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input type="text" placeholder={t('search_employee')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
                         </button>
@@ -180,11 +185,11 @@ export default function EmployeesPage() {
                     <table className="table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Last Name</th>
-                                <th>First Name</th>
-                                <th>Email</th>
-                                <th>Function</th>
-                                <th className="!text-center">Actions</th>
+                                <th>{t('last_name')}</th>
+                                <th>{t('first_name')}</th>
+                                <th>{t('email')}</th>
+                                <th>{t('function')}</th>
+                                <th className="!text-center">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -197,13 +202,13 @@ export default function EmployeesPage() {
                                     <td>
                                         <div className="flex items-center justify-center gap-4">
                                             <Link href={`/dashboard/employees/assign-products/${employee.id}`} className="btn btn-sm btn-outline-success">
-                                                Assign Products
+                                                {t('assign_products')}
                                             </Link>
                                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editEmployee(employee)}>
-                                                Edit
+                                                {t('edit')}
                                             </button>
                                             <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteEmployee(employee)}>
-                                                Delete
+                                                {t('delete')}
                                             </button>
                                         </div>
                                     </td>
@@ -244,27 +249,27 @@ export default function EmployeesPage() {
                                     <div className="p-5">
                                         <form>
                                             <div className="mb-5">
-                                                <label htmlFor="last_name">Last Name</label>
-                                                <input id="last_name" type="text" placeholder="Enter Last Name" className="form-input" value={params.last_name} onChange={changeValue} />
+                                                <label htmlFor="last_name">{t('last_name')}</label>
+                                                <input id="last_name" type="text" placeholder={t('enter_lname')} className="form-input" value={params.last_name} onChange={changeValue} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="first_name">First Name</label>
-                                                <input id="first_name" type="text" placeholder="Enter First Name" className="form-input" value={params.first_name} onChange={changeValue} />
+                                                <label htmlFor="first_name">{t('first_name')}</label>
+                                                <input id="first_name" type="text" placeholder={t('enter_lname')} className="form-input" value={params.first_name} onChange={changeValue} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="email">Email</label>
-                                                <input id="email" type="email" placeholder="Enter Email" className="form-input" value={params.email} onChange={changeValue} />
+                                                <label htmlFor="email">{t('email')}</label>
+                                                <input id="email" type="email" placeholder={t('enter_email')} className="form-input" value={params.email} onChange={changeValue} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="function">Function</label>
-                                                <input id="function" type="text" placeholder="Enter Function" className="form-input" value={params.function} onChange={changeValue} />
+                                                <label htmlFor="function">{t('function')}</label>
+                                                <input id="function" type="text" placeholder={t('enter_function')} className="form-input" value={params.function} onChange={changeValue} />
                                             </div>
                                             <div className="mt-8 flex items-center justify-end">
                                                 <button type="button" className="btn btn-outline-danger" onClick={() => setAddEmployeeModal(false)}>
-                                                    Cancel
+                                                    {t('cancel')}
                                                 </button>
                                                 <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveEmployee}>
-                                                    {params.id ? 'Update' : 'Add'}
+                                                    {params.id ? t('update') : t('add')}
                                                 </button>
                                             </div>
                                         </form>
