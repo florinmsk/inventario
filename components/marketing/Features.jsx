@@ -32,8 +32,13 @@ export default function Features() {
                 and efficient operations."
                         className="col-span-2 lg:col-span-1"
                     >
-                        <div className="flex justify-center items-center h-full">
-                            <img alt="User Role Management" src="https://img.freepik.com/free-vector/flat-design-people-working-together_23-2147687940.jpg?w=1800" />
+                        <div className="flex justify-center items-center">
+                            <Image
+                                alt="User Role Management"
+                                src="https://img.freepik.com/free-vector/recruit-agent-analyzing-candidates_74855-4565.jpg?t=st=1737803458~exp=1737807058~hmac=70029aa3581c087969fe806373674fb134991cba12a34b84655c4902fdd55b58&w=2000"
+                                width={300}
+                                height={300}
+                            />
                         </div>
                     </FeatureCard>
                     <FeatureCard
@@ -47,6 +52,7 @@ export default function Features() {
                                 alt="Real-Time Inventory Tracking"
                                 src="https://img.freepik.com/premium-vector/warehouse-employee-checking-stock-levels-inventory-management-stock-control-warehouse-operations-supply-chain-efficiency-illustration_327176-1824.jpg?w=1800"
                                 width={300}
+                                height={300}
                             />
                         </div>
                     </FeatureCard>
@@ -61,6 +67,7 @@ export default function Features() {
                                 alt="Multi-Location Management"
                                 src="https://img.freepik.com/premium-vector/businessman-is-coordinating-logistics-venues-catering_249611-36437.jpg?w=2000"
                                 width={300}
+                                height={300}
                             />
                         </div>
                     </FeatureCard>
@@ -68,7 +75,7 @@ export default function Features() {
                 <div className="mt-8 flex flex-wrap gap-3 justify-center">
                     {features.map((feature, index) => (
                         <div key={index} className="bg-neutral-900 border border-white/15 inline-flex px-3 md:px-5 py-1.5 md:py-2 rounded-2xl gap-3 items-center">
-                            <span className="bg-accent text-neutral-950 size-5 rounded-full inline-flex justify-center items-center text-xl">&#10038;</span>
+                            <span className="bg-pink-600 text-neutral-950 size-5 rounded-full inline-flex justify-center items-center text-xl">&#10038;</span>
                             <span className="font-medium md:text-large">{feature}</span>
                         </div>
                     ))}

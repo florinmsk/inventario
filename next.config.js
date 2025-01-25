@@ -6,7 +6,7 @@ const nextConfig = {
         ignoreDuringBuilds: true,
     },
     images: {
-        domains: ['lh3.googleusercontent.com', 'vcvxzsoipykfyvpbnwwt.supabase.co'],
+        domains: ['lh3.googleusercontent.com', 'vcvxzsoipykfyvpbnwwt.supabase.co', 'img.freepik.com'],
     },
 };
 

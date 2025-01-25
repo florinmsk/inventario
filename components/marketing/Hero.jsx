@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import Button from '../Button';
 
 export default function Hero() {
     return (
@@ -20,21 +20,11 @@ export default function Hero() {
                 <p className="text-center text-xl text-white/60 mt-8 text-pretty max-w-3xl mx-auto">
                     Effortlessly manage and track your department&apos;s products with our intuitive SaaS solution, streamlining inventory and boosting operational efficiency.
                 </p>
-                <form className="flex flex-row items-center border border-white/25 rounded-full p-2 mt-8 max-w-lg mx-auto">
-                    <input
-                        autoComplete="off"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email adress"
-                        classNames={{
-                            input: '!p-0 !m-0 !border-none !bg-transparent !text-inherit !px-4',
-                            inputWrapper: '!p-0 !m-0 !border-none !bg-transparent',
-                            innerWrapper: '!p-0 !m-0 !border-none !bg-transparent',
-                        }}
-                    />
-                    <button type="submit" radius="full" size="md" className="bg-gradient-to-tr from-primary to-accent text-white shadow-lg whitespace-nowrap">
+                <form className="flex flex-row justify-between items-center border border-white/25 rounded-full p-2 mt-8 max-w-lg mx-auto">
+                    <input autoComplete="off" name="email" type="email" placeholder="Enter your email adress" className="!p-0 !m-0 !border-none !bg-transparent !text-inherit !px-4 focus:outline-0" />
+                    <Button type="submit" variant="primary">
                         Sign Up
-                    </button>
+                    </Button>
                 </form>
             </div>
         </section>
