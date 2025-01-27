@@ -10,6 +10,9 @@ import React, { Fragment, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { getTranslation } from '@/i18n';
 
+import SkeletonList from '@/components/SkeletonList';
+import SkeletonCard from '@/components/SkeletonCard';
+
 import { getProductsData } from '@/data/products/getProductsData';
 import { createProduct } from '@/data/products/createProduct';
 import { deleteProduct as deleteProductFromDB } from '@/data/products/deleteProduct';
@@ -19,6 +22,14 @@ export default function ProductsPage() {
     const { t } = getTranslation();
     const [addProductModal, setAddProductModal] = useState<any>(false);
     const [products, setProducts] = useState<any>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+
+    // Calculează indexul rândurilor pentru pagina curentă
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
     useEffect(() => {
         const fetchProductsData = async () => {
@@ -28,8 +39,12 @@ export default function ProductsPage() {
                 setFilteredItems(data);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsLoading(false);
+                console.log(isLoading);
             }
         };
+
         fetchProductsData();
     }, []);
 
@@ -164,6 +179,14 @@ export default function ProductsPage() {
         });
     };
 
+    // Total pagini
+    const totalPages = Math.ceil(filteredItems.length / rowsPerPage);
+
+    // Navigare între pagini
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -239,40 +262,88 @@ export default function ProductsPage() {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Paginare */}
+                    <div className="flex justify-center items-center p-4">
+                        <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto">
+                            {/* Buton pentru pagina anterioară */}
+                            <li>
+                                <button
+                                    type="button"
+                                    className="flex justify-center font-semibold p-2 rounded-full transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                            </li>
+
+                            {/* Generarea numerelor de pagină */}
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <li key={index + 1}>
+                                    <button
+                                        type="button"
+                                        className={`flex justify-center font-semibold px-3.5 py-2 rounded-full transition ${
+                                            currentPage === index + 1
+                                                ? 'bg-primary text-white dark:bg-primary'
+                                                : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
+                                        }`}
+                                        onClick={() => handlePageChange(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                </li>
+                            ))}
+
+                            {/* Buton pentru pagina următoare */}
+                            <li>
+                                <button
+                                    type="button"
+                                    className="flex justify-center font-semibold p-2 rounded-full transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             )}
 
             {value === 'grid' && (
                 <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {filteredItems.map((product: any) => {
-                        return (
-                            <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]" key={product.id}>
-                                <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]">
-                                    <div className="rounded-t-md bg-white/10 bg-[url('/assets/images/notification-bg.png')] bg-cover bg-center p-6 pb-0">
-                                        <img
-                                            className="mx-auto max-h-44 min-h-44 w-4/5 object-contain"
-                                            src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
-                                            alt="product_image"
-                                        />
+                    {filteredItems.map((product: any) => (
+                        <div key={product.id} className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]">
+                            <div className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]">
+                                <div className="rounded-t-md bg-white/10 bg-[url('/assets/images/notification-bg.png')] bg-cover bg-center p-6 pb-0">
+                                    <img
+                                        className="mx-auto max-h-44 min-h-44 w-4/5 object-contain"
+                                        src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
+                                        alt="product_image"
+                                    />
+                                </div>
+                                <div className="relative -mt-10 px-6 pb-24">
+                                    <div className="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
+                                        <div className="text-xl">{product.title}</div>
+                                        <div className="text-white-dark">{product.description}</div>
                                     </div>
-                                    <div className="relative -mt-10 px-6 pb-24">
-                                        <div className="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
-                                            <div className="text-xl">{product.title}</div>
-                                            <div className="text-white-dark">{product.description}</div>
-                                        </div>
-                                        <div className="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
-                                            <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editProduct(product)}>
-                                                {t('edit')}
-                                            </button>
-                                            <button type="button" className="btn btn-outline-danger w-1/2" onClick={() => deleteProduct(product)}>
-                                                {t('delete')}
-                                            </button>
-                                        </div>
+                                    <div className="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
+                                        <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editProduct(product)}>
+                                            {t('edit')}
+                                        </button>
+                                        <button type="button" className="btn btn-outline-danger w-1/2" onClick={() => deleteProduct(product)}>
+                                            {t('delete')}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        );
-                    })}
+                        </div>
+                    ))}
                 </div>
             )}
 

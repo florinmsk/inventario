@@ -18,6 +18,13 @@ export default function EmployeesPage() {
     const [addEmployeeModal, setAddEmployeeModal] = useState<any>(false);
     const [employees, setEmployees] = useState<any>([]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+
+    // Calculează indexul rândurilor pentru pagina curentă
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
     useEffect(() => {
         const fetchEmployeesData = async () => {
             try {
@@ -156,23 +163,31 @@ export default function EmployeesPage() {
         });
     };
 
+    const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+    // Total pagini
+    const totalPages = Math.ceil(filteredItems.length / rowsPerPage);
+
+    // Navigare între pagini
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="text-xl">{t('employees')}</h2>
+                <h2 className="text-xl">{t('handover_records')}</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
-                        <div className="flex gap-3">
-                            <button type="button" className="btn btn-primary" onClick={() => editEmployee()}>
-                                {t('add_employee')}
-                            </button>
-                            <Link href="/dashboard/employees/import-list" className="btn btn-success">
-                                {t('import_mployees')}
-                            </Link>
-                        </div>
+                        <button type="button" className="btn btn-primary" onClick={() => editEmployee()}>
+                            {t('add_employee')}
+                        </button>
+                        <Link href="/dashboard/employees/import-list" className="btn btn-success">
+                            {t('import_mployees')}
+                        </Link>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder={t('search_employee')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input type="text" placeholder={t('search_handover')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
                         </button>
@@ -180,7 +195,7 @@ export default function EmployeesPage() {
                 </div>
             </div>
 
-            <div className="panel mt-5 overflow-hidden border-0 p-0">
+            <div className="panel mt-5 overflow-hidden border-0 p-0 ">
                 <div className="table-responsive">
                     <table className="table-striped table-hover">
                         <thead>
@@ -193,7 +208,7 @@ export default function EmployeesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredItems.map((employee: any) => (
+                            {paginatedItems.map((employee: any) => (
                                 <tr key={employee.id}>
                                     <td>{employee.last_name}</td>
                                     <td>{employee.first_name}</td>
@@ -216,6 +231,56 @@ export default function EmployeesPage() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Paginare */}
+                <div className="flex justify-center items-center p-4">
+                    <ul className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto">
+                        {/* Buton pentru pagina anterioară */}
+                        <li>
+                            <button
+                                type="button"
+                                className="flex justify-center font-semibold p-2 rounded-full transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                        </li>
+
+                        {/* Generarea numerelor de pagină */}
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <li key={index + 1}>
+                                <button
+                                    type="button"
+                                    className={`flex justify-center font-semibold px-3.5 py-2 rounded-full transition ${
+                                        currentPage === index + 1
+                                            ? 'bg-primary text-white dark:bg-primary'
+                                            : 'bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary'
+                                    }`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            </li>
+                        ))}
+
+                        {/* Buton pentru pagina următoare */}
+                        <li>
+                            <button
+                                type="button"
+                                className="flex justify-center font-semibold p-2 rounded-full transition bg-white-light text-dark hover:text-white hover:bg-primary dark:text-white-light dark:bg-[#191e3a] dark:hover:bg-primary"
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

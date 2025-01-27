@@ -1,4 +1,5 @@
 {
+    "dashboard": "Dashboard",
     "account_settings": "Account Settings",
     "add": "Add",
     "add_employee": "Add Employee",
@@ -51,5 +52,8 @@
     "view": "View",
     "users": "Users",
     "user_and_pages": "User & Pages",
-    "email": "Email"
+    "email": "Email",
+    "handover_records": "Handover Records",
+    "create_handover": "Create Handover",
+    "search_handover": "Search Handover"
 }
