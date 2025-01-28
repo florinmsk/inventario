@@ -24,6 +24,15 @@ export const middleware = async (request: NextRequest): Promise<NextResponse> =>
     const pathName = request.nextUrl.pathname;
     const isProtectedRoute = protectedRoutes.some((route) => pathName.startsWith(route));
 
+    if (pathName === '/') {
+        const { data, error } = await supabase.auth.getUser();
+
+        if (data.user) {
+            const dashboardUrl = new URL('/dashboard', request.url);
+            return NextResponse.redirect(dashboardUrl);
+        }
+    }
+
     if (isProtectedRoute) {
         // Obține sesiunea utilizatorului
         const { data, error } = await supabase.auth.getUser();
