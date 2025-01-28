@@ -9,7 +9,7 @@ import Footer from '@/components/marketing/Footer';
 
 export default function HomePage() {
     return (
-        <main className="font-inter text-white">
+        <main className="bg-neutral-950 font-inter text-white">
             <Navbar />
             <Hero />
             <LogoTicker />

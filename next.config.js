@@ -6,7 +6,20 @@ const nextConfig = {
         ignoreDuringBuilds: true,
     },
     images: {
-        domains: ['lh3.googleusercontent.com', 'vcvxzsoipykfyvpbnwwt.supabase.co', 'img.freepik.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'lh3.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'vcvxzsoipykfyvpbnwwt.supabase.co',
+            },
+            {
+                protocol: 'https',
+                hostname: 'img.freepik.com',
+            },
+        ],
     },
 };
 
