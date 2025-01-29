@@ -183,7 +183,7 @@ export default function EmployeesPage() {
                             {t('add_employee')}
                         </button>
                         <Link href="/dashboard/employees/import-list" className="btn btn-success">
-                            {t('import_employees')}
+                            {t('import_mployees')}
                         </Link>
                     </div>
                     <div className="relative">
