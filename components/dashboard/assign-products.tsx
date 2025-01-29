@@ -111,7 +111,7 @@ export default function AssignProducts({ id }: { id: number }) {
         <div>
             <div className={`relative flex h-full gap-5 sm:h-[calc(100vh_-_150px)] sm:min-h-0 ${isShowChatMenu ? 'min-h-[999px]' : ''}`}>
                 <div className={`panel absolute z-10 hidden h-full w-full max-w-xs flex-none space-y-4 overflow-hidden p-4 xl:relative xl:block ${isShowChatMenu ? '!block' : ''}`}>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
                             <div className="flex-none">
                                 <img src="/assets/images/avatar.jpg" className="h-12 w-12 rounded-full object-cover" alt="" />
@@ -120,12 +120,6 @@ export default function AssignProducts({ id }: { id: number }) {
                                 <p className="mb-1 font-semibold">{`${employee.last_name} ${employee.first_name}`}</p>
                                 <p className="text-xs text-white-dark">{employee.email}</p>
                             </div>
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <input type="text" className="peer form-input ltr:pr-9 rtl:pl-9" placeholder={t('search_products')} value={searchProduct} onChange={(e) => setSearchProduct(e.target.value)} />
-                        <div className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-2 rtl:left-2">
-                            <IconSearch />
                         </div>
                     </div>
                     <div className="h-px w-full border-b border-white-light dark:border-[#1b2e4b]"></div>
