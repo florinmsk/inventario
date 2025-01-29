@@ -176,18 +176,18 @@ export default function EmployeesPage() {
     return (
         <div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h2 className="text-xl">{t('handover_records')}</h2>
+                <h2 className="text-xl">{t('employees')}</h2>
                 <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                     <div className="flex gap-3">
                         <button type="button" className="btn btn-primary" onClick={() => editEmployee()}>
                             {t('add_employee')}
                         </button>
                         <Link href="/dashboard/employees/import-list" className="btn btn-success">
-                            {t('import_mployees')}
+                            {t('import_employees')}
                         </Link>
                     </div>
                     <div className="relative">
-                        <input type="text" placeholder={t('search_handover')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <input type="text" placeholder={t('search_employee')} className="peer form-input py-2 ltr:pr-11 rtl:pl-11" value={search} onChange={(e) => setSearch(e.target.value)} />
                         <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                             <IconSearch className="mx-auto" />
                         </button>
