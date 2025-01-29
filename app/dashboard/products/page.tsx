@@ -48,7 +48,7 @@ export default function ProductsPage() {
         fetchProductsData();
     }, []);
 
-    const [value, setValue] = useState<any>('grid');
+    const [value, setValue] = useState<any>('list');
     const [defaultParams] = useState({
         id: null,
         title: '',
@@ -223,42 +223,47 @@ export default function ProductsPage() {
                         <table className="table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>{t('title')}</th>
                                     <th>{t('description')}</th>
                                     <th className="!text-center">{t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredItems.map((product: any) => (
-                                    <tr key={product.id}>
-                                        <td>{product.id}</td>
-                                        <td>
-                                            <div className="flex w-max items-center">
-                                                <div className="w-max">
-                                                    <img
-                                                        src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
-                                                        className="h-8 w-8 rounded-full object-cover ltr:mr-2 rtl:ml-2"
-                                                        alt="avatar"
-                                                    />
+                                {filteredItems.length > 0 ? (
+                                    filteredItems.map((product: any) => (
+                                        <tr key={product.id}>
+                                            <td>
+                                                <div className="flex w-max items-center">
+                                                    <div className="w-max">
+                                                        <img
+                                                            src={product.image && product.image !== '' ? product.image : '/assets/images/imgError.jpg'}
+                                                            className="h-8 w-8 rounded-full object-cover ltr:mr-2 rtl:ml-2"
+                                                            alt="avatar"
+                                                        />
+                                                    </div>
+                                                    <div>{product.title}</div>
                                                 </div>
-
-                                                <div>{product.title}</div>
-                                            </div>
-                                        </td>
-                                        <td>{product.description}</td>
-                                        <td>
-                                            <div className="flex items-center justify-center gap-4">
-                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editProduct(product)}>
-                                                    {t('edit')}
-                                                </button>
-                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProduct(product)}>
-                                                    {t('delete')}
-                                                </button>
-                                            </div>
+                                            </td>
+                                            <td>{product.description}</td>
+                                            <td>
+                                                <div className="flex items-center justify-center gap-4">
+                                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editProduct(product)}>
+                                                        {t('edit')}
+                                                    </button>
+                                                    <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProduct(product)}>
+                                                        {t('delete')}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={3} className="text-center text-gray-500">
+                                            No items available.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>

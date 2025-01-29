@@ -130,25 +130,33 @@ export default function EmployeesPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedItems.map((handover: any) => (
-                                    <tr key={handover.id}>
-                                        <td>{handover.employee_name}</td>
-                                        <td>{handover.document}</td>
-                                        <td>
-                                            <div className="flex items-center justify-center gap-4">
-                                                <Link href={`/dashboard/employees/assign-products/${handover.id}`} className="btn btn-sm btn-outline-success">
-                                                    {t('assign_products')}
-                                                </Link>
-                                                <button type="button" className="btn btn-sm btn-outline-primary">
-                                                    {t('edit')}
-                                                </button>
-                                                <button type="button" className="btn btn-sm btn-outline-danger">
-                                                    {t('delete')}
-                                                </button>
-                                            </div>
+                                {paginatedItems.length > 0 ? (
+                                    paginatedItems.map((handover: any) => (
+                                        <tr key={handover.id}>
+                                            <td>{handover.employee_name}</td>
+                                            <td>{handover.document}</td>
+                                            <td>
+                                                <div className="flex items-center justify-center gap-4">
+                                                    <Link href={`/dashboard/employees/assign-products/${handover.id}`} className="btn btn-sm btn-outline-success">
+                                                        {t('assign_products')}
+                                                    </Link>
+                                                    <button type="button" className="btn btn-sm btn-outline-primary">
+                                                        {t('edit')}
+                                                    </button>
+                                                    <button type="button" className="btn btn-sm btn-outline-danger">
+                                                        {t('delete')}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={3} className="text-center">
+                                            No items available.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>

@@ -208,27 +208,35 @@ export default function EmployeesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedItems.map((employee: any) => (
-                                <tr key={employee.id}>
-                                    <td>{employee.last_name}</td>
-                                    <td>{employee.first_name}</td>
-                                    <td>{employee.email}</td>
-                                    <td>{employee.function}</td>
-                                    <td>
-                                        <div className="flex items-center justify-center gap-4">
-                                            <Link href={`/dashboard/employees/assign-products/${employee.id}`} className="btn btn-sm btn-outline-success">
-                                                {t('assign_products')}
-                                            </Link>
-                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editEmployee(employee)}>
-                                                {t('edit')}
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteEmployee(employee)}>
-                                                {t('delete')}
-                                            </button>
-                                        </div>
+                            {paginatedItems.length > 0 ? (
+                                paginatedItems.map((employee: any) => (
+                                    <tr key={employee.id}>
+                                        <td>{employee.last_name}</td>
+                                        <td>{employee.first_name}</td>
+                                        <td>{employee.email}</td>
+                                        <td>{employee.function}</td>
+                                        <td>
+                                            <div className="flex items-center justify-center gap-4">
+                                                <Link href={`/dashboard/employees/assign-products/${employee.id}`} className="btn btn-sm btn-outline-success">
+                                                    {t('assign_products')}
+                                                </Link>
+                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editEmployee(employee)}>
+                                                    {t('edit')}
+                                                </button>
+                                                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteEmployee(employee)}>
+                                                    {t('delete')}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="text-center">
+                                        No items available.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

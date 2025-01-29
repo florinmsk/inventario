@@ -1,6 +1,7 @@
 {
     "dashboard": "Dashboard",
     "account_settings": "Account Settings",
+    "actions": "Actions",
     "add": "Add",
     "add_employee": "Add Employee",
     "add_product": "Add Product",
@@ -55,5 +56,13 @@
     "email": "Email",
     "handover_records": "Handover Records",
     "create_handover": "Create Handover",
-    "search_handover": "Search Handover"
+    "search_handover": "Search Handover",
+    "new_products": "New Products",
+    "used_products": "Used Products",
+    "total": "Total",
+    "new": "New",
+    "used": "Used",
+    "damaged": "Damaged",
+    "products_distribution": "Products Distribution",
+    "products_by_status": "Products by Status"
 }
