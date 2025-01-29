@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/client';
 
 type Profile = {
+    website: string | null;
     first_name: string;
     last_name: string;
     email: string;
@@ -24,7 +25,7 @@ export const getAuthUserProfile = async (): Promise<Profile[]> => {
     // Fetch the profile data, explicitly defining the response type
     const { data: profile, error: profileError } = await supabase
         .from('profiles') // Table name as a string
-        .select('first_name, last_name, email, avatar_url, phone')
+        .select('first_name, last_name, email, avatar_url, phone, website')
         .eq('id', userId);
 
     if (profileError) {

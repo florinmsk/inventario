@@ -13,19 +13,13 @@ const tableHeaders = ['Last Name', 'First Name', 'Email', 'Function'];
 export default function ImportListPage() {
     const { t } = getTranslation();
     const [tableData, setTableData] = useState<any[]>([]); // Stochează datele importate
-    const [isUploading, setIsUploading] = useState(false);
-    const [fileName, setFileName] = useState<string>('');
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-    const handleFileClick = () => {
-        fileInputRef.current?.click();
-    };
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setFileName(file.name);
         // Citește fișierul
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -102,46 +96,35 @@ export default function ImportListPage() {
         <div className="p-4">
             <div className="flex flex-col justify-center mb-4">
                 <h2 className="text-lg font-bold mb-4 text-center">{t('fileImportMessage')}</h2>
-
-                {/* Custom file upload input */}
-                <div className="flex items-center justify-center">
-                    <input type="file" ref={fileInputRef} accept=".xlsx, .xls, .csv" onChange={handleFileUpload} className="hidden" />
-                    <div className="flex flex-col items-center">
-                        <button onClick={handleFileClick} className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                            </svg>
-                            {t('choose_file')}
-                        </button>
-                        {fileName && <p className="mt-2 text-sm text-gray-600">{fileName}</p>}
-                    </div>
-                </div>
+                <input type="file" accept=".xlsx, .xls, .csv" onChange={handleFileUpload} className="file-input mb-4 border rounded p-2" />
             </div>
             {tableData.length > 0 ? (
-                <div className="panel mt-5 overflow-hidden border-0 p-0">
-                    <div className="table-responsive">
-                        <table className="table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    {tableHeaders.map((header, index) => (
-                                        <th key={index}>{header}</th>
+                <div className="overflow-x-auto">
+                    <table className="table-auto border-collapse border border-gray-300 w-full">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                {tableHeaders.map((header, index) => (
+                                    <th key={index} className="border border-gray-300 px-4 py-2 text-left">
+                                        {header}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tableData.map((row, rowIndex) => (
+                                <tr key={rowIndex} className="odd:bg-white even:bg-gray-100">
+                                    {tableHeaders.map((header, colIndex) => (
+                                        <td key={colIndex} className="border border-gray-300 px-4 py-2">
+                                            {row[header]}
+                                        </td>
                                     ))}
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {tableData.map((row, rowIndex) => (
-                                    <tr key={rowIndex}>
-                                        {tableHeaders.map((header, colIndex) => (
-                                            <td key={colIndex}>{row[header]}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             ) : (
-                <p className="text-center text-gray-500 dark:text-gray-400 mt-4">{t('noFileUploadedMessage')}</p>
+                <p className="text-gray-600">{t('noFileUploadedMessage')}</p>
             )}
 
             <div className="flex justify-center mt-5">
