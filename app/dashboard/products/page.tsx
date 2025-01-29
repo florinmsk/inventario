@@ -335,7 +335,7 @@ export default function ProductsPage() {
                                 <div className="relative -mt-10 px-6 pb-24">
                                     <div className="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
                                         <div className="text-xl">{product.title}</div>
-                                        <div className="text-white-dark h-10">{product.description}</div>
+                                        <div className="text-white-dark h-10 line-clamp-3">{product.description}</div>
                                     </div>
                                     <div className="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
                                         <button type="button" className="btn btn-outline-primary w-1/2" onClick={() => editProduct(product)}>
